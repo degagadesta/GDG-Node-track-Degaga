@@ -1,21 +1,19 @@
 import http from 'http';
 import { parse } from 'url';
 
-let students = []; // In-memory array of students
-let nextId = 1;    // Simple counter for unique IDs
+let students = []; 
+let nextId = 1;    
 
 const server = http.createServer((req, res) => {
   const parsedUrl = parse(req.url, true);
   const path = parsedUrl.pathname;
   const method = req.method;
 
-  // GET /students → Return all students
   if (method === 'GET' && path === '/students') {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(students));
 
-  // POST /students → Add new student
   } else if (method === 'POST' && path === '/students') {
     let body = '';
     req.on('data', chunk => {
@@ -40,7 +38,6 @@ const server = http.createServer((req, res) => {
       }
     });
 
-  // PUT /students/:id → Update student name
   } else if (method === 'PUT' && path.startsWith('/students/')) {
     const id = parseInt(path.split('/')[2]);
     let body = '';
@@ -66,7 +63,6 @@ const server = http.createServer((req, res) => {
       }
     });
 
-  // DELETE /students/:id → Remove student
   } else if (method === 'DELETE' && path.startsWith('/students/')) {
     const id = parseInt(path.split('/')[2]);
     const index = students.findIndex(s => s.id === id);
@@ -80,7 +76,6 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({ message: `Student ${id} deleted` }));
     }
 
-  // Fallback for other routes
   } else {
     res.statusCode = 404;
     res.end(JSON.stringify({ error: 'Not Found' }));
